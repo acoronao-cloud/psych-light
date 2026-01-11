@@ -1,0 +1,1096 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2566">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!doctype html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Strobe + Binaural Sessions&lt;/title&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- PWA --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;link rel="manifest" href="/manifest.webmanifest"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="theme-color" content="#000000"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="apple-mobile-web-app-title" content="Strobe"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;link rel="apple-touch-icon" href="/icon-192.png"&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>:root{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--bg:#000;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--panel: rgba(15,15,18,.68);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--panel2: rgba(255,255,255,.06);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--border: rgba(255,255,255,.12);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--text: rgba(255,255,255,.92);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--muted: rgba(255,255,255,.72);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--muted2: rgba(255,255,255,.55);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--danger:#ff3b30;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--ok:#ffffff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--shadow: 0 10px 30px rgba(0,0,0,.45);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>--radius:16px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>html,body{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin:0;height:100%;background:var(--bg);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>overflow:hidden; /* page locked; scroll happens inside #ui */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>-webkit-tap-highlight-color: transparent;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>touch-action: none; /* IMPORTANT: prevent body from stealing scroll */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* IMPORTANT: screen never captures taps */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#screen{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:fixed; inset:0; background:#000;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Main controls panel (scrollable + no bounce stealing) */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#ui{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:fixed; left:14px; top:14px; right:14px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:200;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display:flex; flex-wrap:wrap; gap:12px; align-items:flex-start;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:var(--panel); color:var(--text);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:var(--radius);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:12px 12px 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(12px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: var(--shadow);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:auto;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>max-height: calc(100vh - 28px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>overflow-y: auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>-webkit-overflow-scrolling: touch;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>overscroll-behavior: contain;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>touch-action: pan-y;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>scrollbar-width: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#ui::-webkit-scrollbar{ display:none; }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#ui.hidden{display:none}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.grp{display:flex;flex-direction:column;gap:8px;min-width:200px}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>label{font-size:12px;color:var(--muted)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.tiny{font-size:11px;color:var(--muted2);max-width:560px;line-height:1.25}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.mono{font-variant-numeric: tabular-nums}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>select,input,button{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font:inherit;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:var(--panel2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:var(--text);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:7px 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>outline:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>touch-action: manipulation;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>input[type="range"]{width:220px}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>input[type="number"]{width:90px}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button{font-weight:800;cursor:pointer}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button.primary{background:var(--ok);color:#000;border-color:var(--ok)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button.danger{background:var(--danger);color:#fff;border-color:var(--danger)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>button.ghost{background:transparent}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>summary{cursor:pointer;color:var(--muted);font-weight:700}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>details{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>width:100%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:14px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:8px 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.03);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>max-width:100%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.spacer{flex:1}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Value pills for sliders */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.val{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display:inline-flex;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>align-items:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>justify-content:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>min-width:74px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:6px 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,255,255,.14);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.25);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:#fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:800;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>letter-spacing:.2px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(8px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Toast */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#toast{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:fixed; left:50%; bottom:18px; transform:translateX(-50%);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.78); color:var(--text);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:10px 12px; border-radius:14px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:500;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>opacity:0; transition:.25s;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>max-width:min(980px, calc(100% - 24px));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: var(--shadow);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Overlays */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.overlay{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:fixed; inset:0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:600;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display:none; place-items:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.92);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:20px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.overlay.show{display:grid}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.card{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>width:min(980px, 100%);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:18px 18px 14px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.05);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:var(--text);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: var(--shadow);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.card h1{margin:0 0 10px 0;font-size:18px}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.card p{margin:0 0 10px 0;color:var(--muted);line-height:1.35}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.card ul{margin:10px 0 14px 18px;color:var(--muted);line-height:1.35}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.pill{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display:inline-flex; gap:8px; align-items:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid var(--border);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:6px 10px; border-radius:999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.04);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:var(--muted);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Countdown styling */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#countNum{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:78px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:900;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>letter-spacing:-1px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin:8px 0 0 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#countTitle{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:800;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin:0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#countMsg{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin:10px 0 0 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:var(--muted);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>line-height:1.35;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.brandLine{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>margin-top:12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>text-align:center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:var(--muted2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>a{color:#fff}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>/* Minimal HUD */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#hud{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:fixed;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>inset:0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:400;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>display:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#hudTime{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:absolute;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>top:16px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>left:50%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>transform:translateX(-50%);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:28px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:900;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:#fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>opacity:.88;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:6px 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(0,0,0,.25);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,255,255,.12);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(8px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#hudStop, #hudToggle{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pointer-events:auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>touch-action: manipulation;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#hudStop{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:absolute;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>bottom:18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>left:50%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>transform:translateX(-50%);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:900;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>padding:10px 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:#ff3b30;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:#fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:99999;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>box-shadow: 0 10px 28px rgba(0,0,0,.45);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>#hudToggle{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>position:absolute;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>top:16px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>right:16px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>width:44px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>height:44px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border-radius:999px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,255,255,.14);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,.10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>color:#fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-size:18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>font-weight:900;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>z-index:99999;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(8px);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Safety / Welcome --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="warn" class="overlay show"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row" style="justify-content:space-between;align-items:flex-start"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;h1 id="wTitle"&gt;⚠️ Safety notice&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;p id="wSub"&gt;This app can produce black/white strobe flashes and binaural audio tones.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;span class="pill" id="wPill"&gt;Headphones recommended&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;select id="langTop"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="en" selected&gt;English&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="es"&gt;Español&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;ul id="wList"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;li&gt;If you have photosensitive epilepsy, seizures, or severe light-triggered migraine: &lt;b&gt;do not use&lt;/b&gt;.&lt;/li&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;li&gt;Start low (e.g., 6–10 flashes/s), moderate volume, eyes closed.&lt;/li&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;li&gt;Stop immediately if you feel unwell.&lt;/li&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="enter" class="primary"&gt;I Understand — Enter&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="enterNoStrobe"&gt;Enter (Strobe OFF)&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p class="tiny" id="wFoot"&gt;On iPhone/iPad, audio starts only after tapping Start (system policy).&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="divider"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="brandLine mono" id="brandWelcome"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Countdown overlay --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="countdown" class="overlay"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="text-align:center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p id="countTitle"&gt;Get ready&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div id="countNum" class="mono"&gt;10&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p id="countMsg"&gt;Put on headphones, get comfortable. When it reaches 3, close your eyes.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="divider"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row" style="justify-content:center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="cancelCountdown" class="danger"&gt;Cancel&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="brandLine mono" id="brandCountdown"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="screen"&gt;&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Minimal HUD --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="hud"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="hudTime" class="mono"&gt;00:00 / 00:00&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;button id="hudStop"&gt;STOP&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;button id="hudToggle" title="Show / hide controls"&gt;⚙︎&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;!-- Full controls --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="ui"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grp" style="min-width:260px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;label id="lSession"&gt;Session&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="start" class="primary"&gt;Start&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="stop" class="danger"&gt;STOP&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button id="fs" class="ghost" title="Fullscreen"&gt;⤢&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="spacer"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;select id="lang"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="en" selected&gt;English&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="es"&gt;Español&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="tiny mono" id="status"&gt;Ready. Use headphones. Eyes closed.&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="tiny mono brandLine" id="brandUI"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grp" style="min-width:280px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;label id="lPreset"&gt;Preset&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;select id="preset" style="min-width:280px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="alpha20" selected&gt;Alpha Classic — 20 min (10 FPS)&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="sweep15"&gt;Alpha Sweep — 15 min (8→12 FPS)&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="bridge25"&gt;Theta Bridge — 25 min (10→7→10 FPS)&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;option value="custom"&gt;Custom&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="tiny" id="presetHint"&gt;Ramp → Plateau → Ramp. FPS is flashes per second (perceived speed).&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grp"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;label id="lStrobe"&gt;Strobe (Black/White)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;label class="pill" style="cursor:pointer"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input id="strobeOn" type="checkbox" checked /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;span id="strobeOnText"&gt;ON&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row" style="gap:10px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lDuty"&gt;White pulse (%)&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="duty" type="range" min="5" max="50" step="1" value="18" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="dutyVal"&gt;18%&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="tiny" id="strobeHint"&gt;White pulse duty cycle affects how “punchy” the flashes feel.&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="grp" style="min-width:320px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;label id="lBinaural"&gt;Binaural (Hemi-Sync style)&lt;/label&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row" style="gap:10px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lCarrier"&gt;Carrier (Hz)&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="carrier" type="range" min="120" max="420" step="1" value="220" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="carrierVal"&gt;220 Hz&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row" style="gap:10px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lVol"&gt;Volume&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="vol" type="range" min="0" max="0.25" step="0.005" value="0.10" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="volVal"&gt;40%&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label id="lRatio"&gt;Beat = ratio × FPS&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;select id="ratio"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="0.5" selected&gt;0.5×&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="0.7"&gt;0.7×&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="1.0"&gt;1.0×&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="1.5"&gt;1.5×&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row" style="gap:10px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lMicro"&gt;Micro-sweep (±Hz)&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="micro" type="range" min="0" max="1.0" step="0.05" value="0.20" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="microVal"&gt;±0.20&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="tiny mono" id="readout"&gt;L: — Hz | R: — Hz | Beat: — Hz | FPS: —&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;details id="advanced"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;summary id="advTitle"&gt;Advanced / Custom session&lt;/summary&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="divider"&gt;&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="row" style="gap:14px;flex-wrap:wrap"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="grp" style="min-width:250px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label id="lProfile"&gt;FPS profile&lt;/label&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lFStart"&gt;Start FPS&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="fpsStart" type="range" min="2" max="25" step="0.1" value="8.0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="fpsStartVal"&gt;8.0 FPS&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lFPlateau"&gt;Plateau FPS&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="fpsPlateau" type="range" min="2" max="25" step="0.1" value="10.0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="fpsPlateauVal"&gt;10.0 FPS&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lFEnd"&gt;End FPS&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="fpsEnd" type="range" min="2" max="25" step="0.1" value="8.0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="val mono" id="fpsEndVal"&gt;8.0 FPS&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="tiny" id="profileHint"&gt;Recommended: 8–12 FPS. Higher is more intense and riskier.&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="grp" style="min-width:310px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label id="lPhases"&gt;Phases (seconds)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lRampIn"&gt;Ramp-in&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="rampIn" type="number" min="5" max="180" value="30" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lPlateauS"&gt;Plateau&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="plateauS" type="number" min="10" max="7200" value="1080" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label id="lRampOut"&gt;Ramp-out&lt;/label&gt;&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="rampOut" type="number" min="5" max="300" value="60" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="grp" style="min-width:250px"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label id="lCountdown"&gt;Countdown (seconds)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input id="countdownSec" type="number" min="3" max="30" value="10" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="tiny" id="countdownHint"&gt;Before session starts.&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/details&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;div id="toast"&gt;&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p1"><span class="s1">(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const $ = (id) =&gt; document.getElementById(id);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if ("serviceWorker" in navigator) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>window.addEventListener("load", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>navigator.serviceWorker.register("/sw.js").catch(()=&gt;{});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const I18N = {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>en: {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wTitle:"⚠️ Safety notice",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wSub:"This app can produce black/white strobe flashes and binaural audio tones.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wPill:"Headphones recommended",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wList:[</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"If you have photosensitive epilepsy, seizures, or severe light-triggered migraine: do not use.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Start low (e.g., 6–10 flashes/s), moderate volume, eyes closed.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Stop immediately if you feel unwell."</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>enter:"I Understand — Enter",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>enterNoStrobe:"Enter (Strobe OFF)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wFoot:"On iPhone/iPad, audio starts only after tapping Start (system policy).",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lSession:"Session",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>statusReady:"Ready. Use headphones. Eyes closed.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPreset:"Preset",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>presetHint:"Ramp → Plateau → Ramp. FPS is flashes per second (perceived speed).",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lStrobe:"Strobe (Black/White)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>strobeOnText:"ON",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lDuty:"White pulse (%)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>strobeHint:"White pulse duty cycle affects how “punchy” the flashes feel.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lBinaural:"Binaural (Hemi-Sync style)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lCarrier:"Carrier (Hz)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lVol:"Volume",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRatio:"Beat = ratio × FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lMicro:"Micro-sweep (±Hz)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>advTitle:"Advanced / Custom session",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lProfile:"FPS profile",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFStart:"Start FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFPlateau:"Plateau FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFEnd:"End FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>profileHint:"Recommended: 8–12 FPS. Higher is more intense and riskier.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPhases:"Phases (seconds)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRampIn:"Ramp-in",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPlateauS:"Plateau",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRampOut:"Ramp-out",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lCountdown:"Countdown (seconds)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>countdownHint:"Before session starts.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastEntered:"Welcome. Configure and press Start.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastNoStrobe:"Entered with strobe OFF.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastStopped:"Stopped.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastEnded:"Session completed.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdTitle:"Get ready",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsg:"Put on headphones, get comfortable. When it reaches 3, close your eyes.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsg3:"Close your eyes now.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsgGo:"Starting session…",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>brandPrefix:"CREATED BY AGUSTIN CORONA. FOR MORE INFORMATION: "</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>es: {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wTitle:"⚠️ Aviso de seguridad",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wSub:"Esta app puede generar estrobo blanco/negro y audio binaural.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wPill:"Audífonos recomendados",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wList:[</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Si tienes epilepsia fotosensible, convulsiones o migraña severa inducida por luz: no lo uses.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Empieza bajo (p.ej., 6–10 flashes/s), volumen moderado, ojos cerrados.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>"Detén inmediatamente si te sientes mal."</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>enter:"Entendido — Entrar",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>enterNoStrobe:"Entrar (Estrobo OFF)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>wFoot:"En iPhone/iPad el audio solo inicia después de tocar Start (política del sistema).",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lSession:"Sesión",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>statusReady:"Listo. Usa audífonos. Ojos cerrados.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPreset:"Preset",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>presetHint:"Rampa → Meseta → Rampa. FPS = flashes por segundo (lo que percibes).",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lStrobe:"Estrobo (Blanco/Negro)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>strobeOnText:"ON",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lDuty:"Pulso blanco (%)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>strobeHint:"El duty del pulso blanco cambia qué tan “fuerte” se siente el flash.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lBinaural:"Binaural (estilo Hemi-Sync)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lCarrier:"Portadora (Hz)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lVol:"Volumen",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRatio:"Beat = ratio × FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lMicro:"Micro-sweep (±Hz)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>advTitle:"Avanzado / Sesión custom",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lProfile:"Perfil de FPS",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFStart:"FPS inicio",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFPlateau:"FPS meseta",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lFEnd:"FPS final",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>profileHint:"Recomendado: 8–12 FPS. Más alto = más intenso y más riesgoso.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPhases:"Fases (segundos)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRampIn:"Entrada",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lPlateauS:"Meseta",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lRampOut:"Salida",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>lCountdown:"Cuenta regresiva (segundos)",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>countdownHint:"Antes de iniciar la sesión.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastEntered:"Bienvenido. Configura y presiona Start.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastNoStrobe:"Entraste con estrobo OFF.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastStopped:"Detenido.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toastEnded:"Sesión terminada.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdTitle:"Prepárate",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsg:"Ponte audífonos y acomódate. Cuando llegue a 3, cierra los ojos.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsg3:"Cierra los ojos ahora.",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>cdMsgGo:"Iniciando sesión…",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>brandPrefix:"CREADO POR AGUSTIN CORONA. PARA MÁS INFORMACIÓN: "</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const EMAIL = "acoronao@gmail.com";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let LANG = "en";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let running = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let pendingStart = false;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const ui = $("ui");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Prevent “bounce back” by keeping scroll inside the panel</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>ui.addEventListener("touchmove", (e)=&gt;{ /* allow */ }, {passive:true});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>ui.addEventListener("wheel", (e)=&gt;{ /* allow */ }, {passive:true});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function setBrandLines(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const html = `${t.brandPrefix}&lt;a href="mailto:${EMAIL}"&gt;${EMAIL}&lt;/a&gt;`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandWelcome").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandCountdown").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandUI").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function syncLangSelectors(val){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lang").value = val;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("langTop").value = val;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function applyLang(lang){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>LANG = lang;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wTitle").textContent = t.wTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wSub").textContent = t.wSub;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wPill").textContent = t.wPill;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wList").innerHTML = t.wList.map(x=&gt;`&lt;li&gt;${x}&lt;/li&gt;`).join("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("enter").textContent = t.enter;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("enterNoStrobe").textContent = t.enterNoStrobe;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wFoot").textContent = t.wFoot;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lSession").textContent = t.lSession;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!running) $("status").textContent = t.statusReady;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPreset").textContent = t.lPreset;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("presetHint").textContent = t.presetHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lStrobe").textContent = t.lStrobe;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("strobeOnText").textContent = t.strobeOnText;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lDuty").textContent = t.lDuty;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("strobeHint").textContent = t.strobeHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lBinaural").textContent = t.lBinaural;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lCarrier").textContent = t.lCarrier;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lVol").textContent = t.lVol;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRatio").textContent = t.lRatio;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lMicro").textContent = t.lMicro;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("advTitle").textContent = t.advTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lProfile").textContent = t.lProfile;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFStart").textContent = t.lFStart;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFPlateau").textContent = t.lFPlateau;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFEnd").textContent = t.lFEnd;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("profileHint").textContent = t.profileHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPhases").textContent = t.lPhases;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRampIn").textContent = t.lRampIn;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPlateauS").textContent = t.lPlateauS;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRampOut").textContent = t.lRampOut;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lCountdown").textContent = t.lCountdown;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countdownHint").textContent = t.countdownHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countTitle").textContent = t.cdTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countMsg").textContent = t.cdMsg;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("cancelCountdown").textContent = (LANG==="es") ? "Cancelar" : "Cancel";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setBrandLines();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const toast = $("toast");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function showToast(msg, ms=1800){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>toast.textContent = msg;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>toast.style.opacity = "1";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>clearTimeout(showToast._t);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showToast._t = setTimeout(()=&gt; toast.style.opacity="0", ms);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function showControls(){ ui.classList.remove("hidden"); }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function hideControls(){ ui.classList.add("hidden"); }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function showHud(){ $("hud").style.display = "block"; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function hideHud(){ $("hud").style.display = "none"; }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Slider value display helpers</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function pctFromVol(v){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// 0..0.25 =&gt; 0..100%</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return Math.round((v / 0.25) * 100);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function syncSliderValues(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("dutyVal").textContent = `${parseInt($("duty").value,10)}%`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("carrierVal").textContent = `${parseInt($("carrier").value,10)} Hz`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("volVal").textContent = `${pctFromVol(parseFloat($("vol").value))}%`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("microVal").textContent = `±${parseFloat($("micro").value).toFixed(2)}`;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("fpsStartVal").textContent = `${parseFloat($("fpsStart").value).toFixed(1)} FPS`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("fpsPlateauVal").textContent = `${parseFloat($("fpsPlateau").value).toFixed(1)} FPS`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("fpsEndVal").textContent = `${parseFloat($("fpsEnd").value).toFixed(1)} FPS`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>["duty","carrier","vol","micro","fpsStart","fpsPlateau","fpsEnd"].forEach(id=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$(id).addEventListener("input", syncSliderValues);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Strobe + audio engine (same as before)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const screen = $("screen");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let strobeOn = true;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let whiteOn = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let nextEventMs = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let currentFPS = 10;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let dutyPct = 18;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function setScreenWhite(on){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>whiteOn = on;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>screen.style.background = on ? "#fff" : "#000";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function hardStopVisual(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>nextEventMs = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setScreenWhite(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function strobeTick(nowMs){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!strobeOn){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(whiteOn) setScreenWhite(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const fps = Math.max(0.5, Math.min(25, currentFPS));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const period = 1000 / fps;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const duty = Math.max(5, Math.min(50, dutyPct)) / 100.0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const whiteDur = period * duty;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const blackDur = period - whiteDur;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(nextEventMs === 0) nextEventMs = nowMs;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>while(nowMs &gt;= nextEventMs){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(!whiteOn){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setScreenWhite(true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>nextEventMs += whiteDur;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}else{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setScreenWhite(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>nextEventMs += blackDur;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let ac=null, master=null, oscL=null, oscR=null, panL=null, panR=null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function lerp(a,b,t){ return a + (b-a)*t; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function smoothstep(t){ t=clamp(t,0,1); return t*t*(3-2*t); }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function ensureAudio(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(ac) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>ac = new (window.AudioContext || window.webkitAudioContext)();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>master = ac.createGain();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>master.gain.value = 0.0001;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>master.connect(ac.destination);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscL = ac.createOscillator();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscR = ac.createOscillator();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>panL = ac.createStereoPanner(); panL.pan.value = -1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>panR = ac.createStereoPanner(); panR.pan.value =<span class="Apple-converted-space">  </span>1;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscL.type = "sine"; oscR.type = "sine";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscL.connect(panL).connect(master);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscR.connect(panR).connect(master);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function setVolume(v){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!master || !ac) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>master.gain.setTargetAtTime(clamp(v,0,0.25), ac.currentTime, 0.05);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function startAudio(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>ensureAudio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(ac.state === "suspended") ac.resume().catch(()=&gt;{});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = ac.currentTime;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try{ oscL.start(t); }catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try{ oscR.start(t); }catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setVolume(parseFloat($("vol").value));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function setBinaural(carrierHz, beatHz){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!ac || !oscL || !oscR) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>carrierHz = clamp(carrierHz, 80, 600);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>beatHz = clamp(beatHz, 0.5, 15);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const L = carrierHz;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const R = carrierHz + beatHz;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = ac.currentTime;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscL.frequency.setTargetAtTime(L, t, 0.03);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>oscR.frequency.setTargetAtTime(R, t, 0.03);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("readout").textContent =</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>`L: ${L.toFixed(1)} Hz | R: ${R.toFixed(1)} Hz | Beat: ${beatHz.toFixed(2)} Hz | FPS: ${currentFPS.toFixed(2)}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function stopAudio(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!ac) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = ac.currentTime;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>master.gain.setTargetAtTime(0.0001, t, 0.07);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setTimeout(()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>try{ oscL &amp;&amp; oscL.stop(); }catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>try{ oscR &amp;&amp; oscR.stop(); }catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>try{ ac &amp;&amp; ac.close(); }catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>ac=null; master=null; oscL=null; oscR=null; panL=null; panR=null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}, 220);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function presetConfig(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const p = $("preset").value;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(p === "alpha20"){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return { rampIn:30, plateau:(20*60 - 30 - 60), rampOut:60, fpsStart:8.0, fpsPlateau:10.0, fpsEnd:8.0 };</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(p === "sweep15"){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return { rampIn:30, plateau:(15*60 - 30 - 45), rampOut:45, fpsStart:8.0, fpsPlateau:12.0, fpsEnd:8.0, plateauMid:10.0 };</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(p === "bridge25"){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return { rampIn:45, plateau:(25*60 - 45 - 75), rampOut:75, fpsStart:10.0, fpsPlateau:7.0, fpsEnd:10.0, bridge:true };</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>rampIn: parseInt($("rampIn").value||"30",10),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>plateau: parseInt($("plateauS").value||"1080",10),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>rampOut: parseInt($("rampOut").value||"60",10),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fpsStart: parseFloat($("fpsStart").value||"8"),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fpsPlateau: parseFloat($("fpsPlateau").value||"10"),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>fpsEnd: parseFloat($("fpsEnd").value||"8")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function sessionTotalSeconds(cfg){ return Math.max(1, cfg.rampIn + cfg.plateau + cfg.rampOut); }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function fpsAt(cfg, elapsedSec){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const tRampInEnd = cfg.rampIn;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const tPlateauEnd = cfg.rampIn + cfg.plateau;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(elapsedSec &lt;= tRampInEnd){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const p = smoothstep(elapsedSec / Math.max(1,cfg.rampIn));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return lerp(cfg.fpsStart, cfg.fpsPlateau, p);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(elapsedSec &lt;= tPlateauEnd){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const p = (elapsedSec - cfg.rampIn) / Math.max(1,cfg.plateau);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if($("preset").value === "sweep15"){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const mid = cfg.plateauMid ?? 10.0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const wob = 0.5 - 0.5*Math.cos(2*Math.PI*p);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return lerp(cfg.fpsPlateau, mid, wob);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(cfg.bridge){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const wob = 0.15 * Math.sin(2*Math.PI*p);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return clamp(cfg.fpsPlateau + wob, 2, 25);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return cfg.fpsPlateau;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const p = smoothstep((elapsedSec - tPlateauEnd) / Math.max(1,cfg.rampOut));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return lerp(cfg.fpsPlateau, cfg.fpsEnd, p);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function beatAt(fps, elapsedSec){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const ratio = parseFloat($("ratio").value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const micro = parseFloat($("micro").value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const wob = micro * (0.70*Math.sin(elapsedSec*2*Math.PI*0.08) + 0.30*Math.sin(elapsedSec*2*Math.PI*0.13));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return clamp(ratio*fps + wob, 0.5, 15);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let startMs = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let cfg = null;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function formatTime(sec){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>sec = Math.max(0, Math.floor(sec));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const m = Math.floor(sec/60);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const s = sec%60;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return `${m}:${String(s).padStart(2,"0")}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function loop(nowMs){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!running) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const elapsedSec = (nowMs - startMs)/1000;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const totalSec = sessionTotalSeconds(cfg);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(elapsedSec &gt;= totalSec){ stopSession(true); return; }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>currentFPS = fpsAt(cfg, elapsedSec);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>strobeOn = $("strobeOn").checked;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>dutyPct = parseInt($("duty").value,10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>strobeTick(nowMs);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const carrier = parseFloat($("carrier").value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const beat = beatAt(currentFPS, elapsedSec);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setBinaural(carrier, beat);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("hudTime").textContent = `${formatTime(elapsedSec)} / ${formatTime(totalSec)}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>requestAnimationFrame(loop);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function stopSession(auto=false){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!running &amp;&amp; !pendingStart) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>running = false;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(pendingStart){ cancelCountdown(); return; }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>hardStopVisual();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>stopAudio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>hideHud();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showControls();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("status").textContent = t.statusReady;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showToast(auto ? t.toastEnded : t.toastStopped, 1800);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let countdownTimer = null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>let countdownN = 10;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function openCountdown(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>ensureAudio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(ac &amp;&amp; ac.state === "suspended") ac.resume().catch(()=&gt;{});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>countdownN = parseInt($("countdownSec").value || "10", 10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>countdownN = Math.max(3, Math.min(30, countdownN));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countNum").textContent = String(countdownN);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countTitle").textContent = t.cdTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countMsg").textContent = t.cdMsg;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countdown").classList.add("show");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>pendingStart = true;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>clearInterval(countdownTimer);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>countdownTimer = setInterval(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>countdownN -= 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(countdownN &lt;= 3 &amp;&amp; countdownN &gt; 0) $("countMsg").textContent = t.cdMsg3;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(countdownN &lt;= 0){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>$("countNum").textContent = "0";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>$("countMsg").textContent = t.cdMsgGo;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>clearInterval(countdownTimer);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>countdownTimer = null;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>$("countdown").classList.remove("show");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>pendingStart = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>startSessionNow();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}, 450);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>$("countNum").textContent = String(countdownN);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}, 1000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function cancelCountdown(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>clearInterval(countdownTimer);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>countdownTimer = null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countdown").classList.remove("show");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>pendingStart = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>stopAudio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showToast((LANG==="es") ? "Cancelado." : "Canceled.", 1200);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function startSessionNow(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(running) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>cfg = presetConfig();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>startAudio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>hardStopVisual();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>running = true;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>startMs = performance.now();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showHud();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>hideControls();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>requestAnimationFrame(loop);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showToast((LANG==="es") ? "Sesión iniciada." : "Session started.", 1400);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// STOP buttons (click + touchstart)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function bindStop(el){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const handler = (ev) =&gt; { ev.preventDefault(); stopSession(false); };</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener("click", handler, {passive:false});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener("touchstart", handler, {passive:false});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>bindStop($("stop"));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>bindStop($("hudStop"));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function bindToggle(el){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const handler = (ev) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>ev.preventDefault();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(ui.classList.contains("hidden")) showControls();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>else hideControls();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener("click", handler, {passive:false});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>el.addEventListener("touchstart", handler, {passive:false});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>bindToggle($("hudToggle"));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("vol").addEventListener("input", () =&gt; setVolume(parseFloat($("vol").value)));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("duty").addEventListener("input", () =&gt; dutyPct = parseInt($("duty").value,10));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("fs").addEventListener("click", async () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(!document.fullscreenElement) await document.documentElement.requestFullscreen();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>else await document.exitFullscreen();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}catch{}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Language wiring</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function syncLangSelectors(val){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lang").value = val;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("langTop").value = val;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("lang").addEventListener("change", e =&gt; { syncLangSelectors(e.target.value); applyLang(e.target.value); });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("langTop").addEventListener("change", e =&gt; { syncLangSelectors(e.target.value); applyLang(e.target.value); });</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Enter</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("enter").addEventListener("click", ()=&gt;{ $("warn").classList.remove("show"); showToast(I18N[LANG].toastEntered, 1700); });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("enterNoStrobe").addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("warn").classList.remove("show");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("strobeOn").checked = false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>hardStopVisual();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showToast(I18N[LANG].toastNoStrobe, 1700);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("start").addEventListener("click", ()=&gt;{ if(!running &amp;&amp; !pendingStart) openCountdown(); });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("cancelCountdown").addEventListener("click", cancelCountdown);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>document.addEventListener("visibilitychange", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(document.hidden){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(pendingStart) cancelCountdown();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if(running) stopSession(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Init</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function setBrandLines(){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const html = `${t.brandPrefix}&lt;a href="mailto:${EMAIL}"&gt;${EMAIL}&lt;/a&gt;`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandWelcome").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandCountdown").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("brandUI").innerHTML = html;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>function applyLang(lang){</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>LANG = lang;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const t = I18N[LANG];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wTitle").textContent = t.wTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wSub").textContent = t.wSub;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wPill").textContent = t.wPill;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wList").innerHTML = t.wList.map(x=&gt;`&lt;li&gt;${x}&lt;/li&gt;`).join("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("enter").textContent = t.enter;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("enterNoStrobe").textContent = t.enterNoStrobe;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("wFoot").textContent = t.wFoot;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lSession").textContent = t.lSession;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if(!running) $("status").textContent = t.statusReady;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPreset").textContent = t.lPreset;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("presetHint").textContent = t.presetHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lStrobe").textContent = t.lStrobe;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("strobeOnText").textContent = t.strobeOnText;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lDuty").textContent = t.lDuty;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("strobeHint").textContent = t.strobeHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lBinaural").textContent = t.lBinaural;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lCarrier").textContent = t.lCarrier;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lVol").textContent = t.lVol;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRatio").textContent = t.lRatio;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lMicro").textContent = t.lMicro;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("advTitle").textContent = t.advTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lProfile").textContent = t.lProfile;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFStart").textContent = t.lFStart;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFPlateau").textContent = t.lFPlateau;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lFEnd").textContent = t.lFEnd;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("profileHint").textContent = t.profileHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPhases").textContent = t.lPhases;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRampIn").textContent = t.lRampIn;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lPlateauS").textContent = t.lPlateauS;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lRampOut").textContent = t.lRampOut;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("lCountdown").textContent = t.lCountdown;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countdownHint").textContent = t.countdownHint;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countTitle").textContent = t.cdTitle;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("countMsg").textContent = t.cdMsg;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>$("cancelCountdown").textContent = (LANG==="es") ? "Cancelar" : "Cancel";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setBrandLines();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>applyLang("en");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>syncLangSelectors("en");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>$("hud").style.display = "none";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>syncSliderValues();</span></p>
+<p class="p1"><span class="s1">})();</span></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>
