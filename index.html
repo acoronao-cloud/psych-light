@@ -1,341 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Psych Light</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Strobe + Binaural Sessions</title>
 
-<!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Strobe">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 
-<style>
-:root{
-  --bg:#000;
-  --panel:rgba(15,15,20,.78);
-  --panel2:rgba(255,255,255,.06);
-  --border:rgba(255,255,255,.14);
-  --text:rgba(255,255,255,.95);
-  --muted:rgba(255,255,255,.65);
-  --accent:#9aa7ff;
-  --danger:#ff3b30;
-  --radius:18px;
-  --blur:18px;
-}
+  <style>
+    :root{
+      --bg:#000;
+      --panel: rgba(15,15,18,.72);
+      --panel2: rgba(255,255,255,.07);
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --muted2: rgba(255,255,255,.55);
+      --danger:#ff3b30;
+      --ok:#ffffff;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius:16px;
+    }
 
-*{box-sizing:border-box;}
-html,body{
-  margin:0;
-  height:100%;
-  background:#000;
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
-  -webkit-font-smoothing:antialiased;
-  overscroll-behavior:none;
-}
+    html,body{
+      margin:0;height:100%;background:var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      -webkit-tap-highlight-color: transparent;
+      overflow:hidden; /* page locked, scroll is inside UI panel */
+      touch-action:auto; /* IMPORTANT: do NOT set none, it breaks scrolling */
+    }
 
-button,input,select{
-  font:inherit;
-  color:inherit;
-  background:var(--panel2);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:10px 14px;
-}
+    /* Fullscreen strobe layer */
+    #screen{
+      position:fixed; inset:0; background:#000;
+      z-index:0;
+      pointer-events:none;
+    }
 
-button.primary{
-  background:var(--accent);
-  color:#000;
-  font-weight:700;
-}
-button.danger{
-  background:var(--danger);
-  border-color:var(--danger);
-  font-weight:700;
-}
-button.ghost{
-  background:transparent;
-}
-
-input[type=range]{width:100%;}
-small{color:var(--muted);}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-  background:#000;
-}
-
-.card{
-  width:100%;
-  max-width:420px;
-  margin:16px;
-  padding:18px;
-  background:var(--panel);
-  backdrop-filter:blur(var(--blur));
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-}
-
-/* ---------- WELCOME ---------- */
-#welcome{
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,.4), rgba(0,0,0,.9)),
-    url("welcome.png") center/cover no-repeat;
-}
-#welcome h1{margin:0 0 8px;text-align:center;font-size:28px;}
-#welcome p{text-align:center;margin:0 0 18px;}
-
-/* ---------- DISCLAIMER ---------- */
-#disclaimer{display:none;}
-#disclaimer label{
-  display:flex;
-  gap:10px;
-  font-size:14px;
-}
-
-/* ---------- APP ---------- */
-#screen{
-  position:fixed;
-  inset:0;
-  background:#000;
-  z-index:0;
-}
-#ui{
-  position:fixed;
-  inset:12px;
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
-  padding-bottom:120px;
-}
-
-.section{
-  background:var(--panel);
-  backdrop-filter:blur(var(--blur));
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-  padding:14px;
-}
-
-.row{display:flex;gap:10px;align-items:center;}
-.row.space{justify-content:space-between;}
-.value{
-  min-width:80px;
-  text-align:right;
-  color:var(--accent);
-  font-weight:600;
-}
-
-/* ---------- SESSION BAR ---------- */
-#sessionBar{
-  position:fixed;
-  left:12px;
-  right:12px;
-  bottom:12px;
-  z-index:20;
-  display:none;
-}
-#sessionBar .card{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-/* ---------- FOOTER ---------- */
-footer{
-  text-align:center;
-  font-size:12px;
-  color:var(--muted);
-}
-a{color:var(--accent);text-decoration:none;}
-</style>
-</head>
-
-<body>
-
-<div id="screen"></div>
-
-<!-- WELCOME -->
-<div id="welcome" class="overlay">
-  <div class="card">
-    <h1>Psych Light</h1>
-    <p>Light & sound stimulation for meditation and altered states.</p>
-    <button class="primary" onclick="goDisclaimer()">Enter</button>
-  </div>
-</div>
-
-<!-- DISCLAIMER -->
-<div id="disclaimer" class="overlay">
-  <div class="card">
-    <h3>Important Notice</h3>
-    <p>
-      This experience uses flashing light and binaural audio stimulation.<br><br>
-      Do NOT use if you have epilepsy, photosensitivity, neurological conditions,
-      or sensitivity to flashing lights.
-    </p>
-    <label>
-      <input type="checkbox" id="agree">
-      <span>I understand and wish to continue.</span>
-    </label>
-    <br>
-    <button class="primary" onclick="startApp()">Continue</button>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app" style="display:none;">
-  <div id="ui">
-
-    <!-- SESSION -->
-    <div class="section">
-      <div class="row space">
-        <strong>Session</strong>
-        <div class="row">
-          <button class="primary" onclick="startSession()">Start</button>
-          <button class="danger" onclick="stopSession()">Stop</button>
-        </div>
-      </div>
-      <small>Headphones on. Eyes closed.</small>
-      <p style="margin-top:10px;">
-        Created by Agustin Corona<br>
-        <a href="mailto:acoronao@gmail.com">acoronao@gmail.com</a>
-      </p>
-    </div>
-
-    <!-- STROBE -->
-    <div class="section">
-      <strong>Strobe Frequency</strong>
-      <div class="row">
-        <input type="range" min="1" max="20" step="0.1" value="10" id="fps">
-        <div class="value" id="fpsVal">10 FPS</div>
-      </div>
-      <small>Flashes per second. Recommended 8–12.</small>
-    </div>
-
-    <!-- BINAURAL -->
-    <div class="section">
-      <strong>Binaural Carrier</strong>
-      <div class="row">
-        <input type="range" min="100" max="400" step="1" value="220" id="carrier">
-        <div class="value" id="carrierVal">220 Hz</div>
-      </div>
-
-      <strong>Volume</strong>
-      <div class="row">
-        <input type="range" min="0" max="100" value="40" id="vol">
-        <div class="value" id="volVal">40%</div>
-      </div>
-
-      <small>
-        Carrier defines tone pitch. Volume controls intensity.
-      </small>
-    </div>
-
-    <!-- EXPLANATION -->
-    <div class="section">
-      <strong>How to Use</strong>
-      <p>
-        Start with low FPS and volume. Sit or lie down in a dark room.
-        Close your eyes and allow patterns to emerge naturally.
-      </p>
-      <p>
-        Changes in perception, imagery, or time distortion may occur.
-      </p>
-    </div>
-
-    <!-- FAQ -->
-    <div class="section">
-      <strong>FAQ</strong>
-      <p><b>Is this psychedelic?</b><br>
-      It can induce altered or hypnagogic states without substances.</p>
-
-      <p><b>Is it safe?</b><br>
-      For healthy individuals following guidelines, yes. Stop if uncomfortable.</p>
-
-      <p><b>How long should a session be?</b><br>
-      10–20 minutes is ideal for beginners.</p>
-    </div>
-
-    <footer>
-      Experimental tool. Not medical advice.
-    </footer>
-
-  </div>
-</div>
-
-<!-- SESSION BAR -->
-<div id="sessionBar">
-  <div class="card">
-    <span id="timer">Session running</span>
-    <button class="danger" onclick="stopSession()">Stop</button>
-  </div>
-</div>
-
-<script>
-let running=false;
-let flashInterval=null;
-
-const fps=document.getElementById("fps");
-const fpsVal=document.getElementById("fpsVal");
-const carrier=document.getElementById("carrier");
-const carrierVal=document.getElementById("carrierVal");
-const vol=document.getElementById("vol");
-const volVal=document.getElementById("volVal");
-
-function updateValues(){
-  fpsVal.textContent=fps.value+" FPS";
-  carrierVal.textContent=carrier.value+" Hz";
-  volVal.textContent=vol.value+"%";
-}
-[fps,carrier,vol].forEach(el=>el.oninput=updateValues);
-updateValues();
-
-function goDisclaimer(){
-  document.getElementById("welcome").style.display="none";
-  document.getElementById("disclaimer").style.display="flex";
-}
-
-function startApp(){
-  if(!document.getElementById("agree").checked) return;
-  document.getElementById("disclaimer").style.display="none";
-  document.getElementById("app").style.display="block";
-}
-
-function startSession(){
-  if(running) return;
-  running=true;
-  document.getElementById("sessionBar").style.display="block";
-  flash();
-}
-
-function stopSession(){
-  running=false;
-  clearInterval(flashInterval);
-  document.getElementById("screen").style.background="#000";
-  document.getElementById("sessionBar").style.display="none";
-}
-
-function flash(){
-  let on=false;
-  flashInterval=setInterval(()=>{
-    if(!running) return;
-    on=!on;
-    document.getElementById("screen").style.background=on?"#fff":"#000";
-  },1000/parseFloat(fps.value));
-}
-</script>
-
-</body>
-</html>
-
+    /* Main UI panel: fills top->bottom, scrolls inside, safe-areas included */
+    #ui{
+      position:fixed;
+     
