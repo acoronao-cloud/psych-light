@@ -1,1178 +1,341 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Strobe + Binaural Sessions</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Psych Light</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Strobe">
-  <link rel="apple-touch-icon" href="/icon-192.png">
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 
-  <style>
-    :root{
-      --bg:#000;
-      --panel: rgba(15,15,18,.72);
-      --panel2: rgba(255,255,255,.07);
-      --border: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --muted2: rgba(255,255,255,.55);
-      --danger:#ff3b30;
-      --ok:#ffffff;
-      --shadow: 0 10px 30px rgba(0,0,0,.45);
-      --radius:16px;
-    }
+<style>
+:root{
+  --bg:#000;
+  --panel:rgba(15,15,20,.78);
+  --panel2:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.14);
+  --text:rgba(255,255,255,.95);
+  --muted:rgba(255,255,255,.65);
+  --accent:#9aa7ff;
+  --danger:#ff3b30;
+  --radius:18px;
+  --blur:18px;
+}
 
-    html,body{
-      margin:0;height:100%;background:var(--bg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      -webkit-tap-highlight-color: transparent;
-      overflow:hidden; /* lock page */
-    }
+*{box-sizing:border-box;}
+html,body{
+  margin:0;
+  height:100%;
+  background:#000;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+}
 
-    #screen{
-      position:fixed; inset:0; background:#000;
-      z-index:0;
-      pointer-events:none;
-    }
+button,input,select{
+  font:inherit;
+  color:inherit;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 14px;
+}
 
-    /* Panel fills viewport with safe areas; scroll inside */
-    #ui{
-      position:fixed;
-      left:14px; right:14px;
-      top: max(14px, env(safe-area-inset-top));
-      bottom: max(14px, env(safe-area-inset-bottom));
-      z-index:200;
+button.primary{
+  background:var(--accent);
+  color:#000;
+  font-weight:700;
+}
+button.danger{
+  background:var(--danger);
+  border-color:var(--danger);
+  font-weight:700;
+}
+button.ghost{
+  background:transparent;
+}
 
-      display:flex; flex-wrap:wrap; gap:12px; align-items:flex-start;
-      background:var(--panel); color:var(--text);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:12px 12px 10px;
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
+input[type=range]{width:100%;}
+small{color:var(--muted);}
 
-      overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-      touch-action: pan-y;
-      scrollbar-width:none;
-    }
-    #ui::-webkit-scrollbar{ display:none; }
-    #ui.hidden{ display:none; }
+.overlay{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  background:#000;
+}
 
-    .grp{display:flex;flex-direction:column;gap:8px;min-width:240px}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    label{font-size:12px;color:var(--muted)}
-    .tiny{font-size:12px;color:var(--muted);max-width:800px;line-height:1.35}
-    .tiny2{font-size:11px;color:var(--muted2);max-width:900px;line-height:1.35}
-    .mono{font-variant-numeric: tabular-nums}
+.card{
+  width:100%;
+  max-width:420px;
+  margin:16px;
+  padding:18px;
+  background:var(--panel);
+  backdrop-filter:blur(var(--blur));
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+}
 
-    select,input,button{
-      font:inherit;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--panel2);
-      color:var(--text);
-      padding:7px 10px;
-      outline:none;
-      touch-action: manipulation;
-    }
-    input[type="range"]{width:220px}
-    input[type="number"]{width:90px}
-    button{font-weight:900;cursor:pointer}
-    button.primary{background:var(--ok);color:#000;border-color:var(--ok)}
-    button.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
-    button.ghost{background:transparent}
-    summary{cursor:pointer;color:var(--muted);font-weight:800}
+/* ---------- WELCOME ---------- */
+#welcome{
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.4), rgba(0,0,0,.9)),
+    url("welcome.png") center/cover no-repeat;
+}
+#welcome h1{margin:0 0 8px;text-align:center;font-size:28px;}
+#welcome p{text-align:center;margin:0 0 18px;}
 
-    details{
-      width:100%;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 10px;
-      background:rgba(255,255,255,.03);
-      max-width:100%;
-    }
+/* ---------- DISCLAIMER ---------- */
+#disclaimer{display:none;}
+#disclaimer label{
+  display:flex;
+  gap:10px;
+  font-size:14px;
+}
 
-    .divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}
-    .spacer{flex:1}
+/* ---------- APP ---------- */
+#screen{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:0;
+}
+#ui{
+  position:fixed;
+  inset:12px;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:120px;
+}
 
-    .val{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-width:82px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      color:#fff;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.2px;
-      backdrop-filter: blur(8px);
-    }
+.section{
+  background:var(--panel);
+  backdrop-filter:blur(var(--blur));
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  padding:14px;
+}
 
-    /* Toast */
-    #toast{
-      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-      background:rgba(0,0,0,.78); color:var(--text);
-      border:1px solid var(--border);
-      padding:10px 12px; border-radius:14px;
-      z-index:500;
-      opacity:0; transition:.25s;
-      max-width:min(980px, calc(100% - 24px));
-      text-align:center;
-      box-shadow: var(--shadow);
-      pointer-events:none;
-    }
+.row{display:flex;gap:10px;align-items:center;}
+.row.space{justify-content:space-between;}
+.value{
+  min-width:80px;
+  text-align:right;
+  color:var(--accent);
+  font-weight:600;
+}
 
-    /* Overlays */
-    .overlay{
-      position:fixed; inset:0;
-      z-index:600;
-      display:none; place-items:center;
-      background:rgba(0,0,0,.92);
-      padding:20px;
-      pointer-events:auto;
-    }
-    .overlay.show{display:grid}
-    .card{
-      width:min(980px, 100%);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:18px 18px 14px;
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      box-shadow: var(--shadow);
-    }
-    .card h1{margin:0 0 10px 0;font-size:18px}
-    .card p{margin:0 0 10px 0;color:var(--muted);line-height:1.35}
-    .card ul{margin:10px 0 14px 18px;color:var(--muted);line-height:1.35}
-    .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      border:1px solid var(--border);
-      padding:6px 10px; border-radius:999px;
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      font-size:12px;
-    }
+/* ---------- SESSION BAR ---------- */
+#sessionBar{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  z-index:20;
+  display:none;
+}
+#sessionBar .card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    /* Countdown */
-    #countNum{font-size:78px;font-weight:900;letter-spacing:-1px;margin:8px 0 0 0;text-align:center}
-    #countTitle{font-size:18px;font-weight:900;margin:0;text-align:center}
-    #countMsg{text-align:center;margin:10px 0 0 0;color:var(--muted);line-height:1.35}
-
-    .brandLine{margin-top:12px;text-align:center;color:var(--muted2);font-size:12px}
-    a{color:#fff}
-
-    /* Minimal HUD */
-    #hud{
-      position:fixed; inset:0; z-index:400;
-      display:none;
-      pointer-events:none;
-    }
-    #hudTime{
-      position:absolute; top:max(16px, env(safe-area-inset-top));
-      left:50%; transform:translateX(-50%);
-      font-size:28px;font-weight:900;color:#fff;opacity:.92;
-      padding:6px 10px;border-radius:999px;
-      background:rgba(0,0,0,.25);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(8px);
-      pointer-events:none;
-    }
-    #hudStop,#hudToggle{pointer-events:auto;touch-action:manipulation}
-    #hudStop{
-      position:absolute; bottom:max(18px, env(safe-area-inset-bottom));
-      left:50%; transform:translateX(-50%);
-      font-size:18px;font-weight:900;padding:10px 18px;
-      background:#ff3b30;color:#fff;border:none;border-radius:999px;
-      z-index:99999; box-shadow: 0 10px 28px rgba(0,0,0,.45);
-    }
-    #hudToggle{
-      position:absolute; top:max(16px, env(safe-area-inset-top));
-      right:16px;
-      width:44px;height:44px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.10);
-      color:#fff;font-size:18px;font-weight:900;
-      z-index:99999; backdrop-filter: blur(8px);
-    }
-
-    /* Help section styling */
-    .sectionTitle{
-      font-size:14px;
-      font-weight:900;
-      color:#fff;
-      margin:2px 0 0 0;
-    }
-    .faqQ{
-      font-weight:900;
-      color:#fff;
-      margin:10px 0 6px;
-    }
-    .faqA{
-      color:var(--muted);
-      margin:0 0 8px;
-      line-height:1.35;
-    }
-  </style>
+/* ---------- FOOTER ---------- */
+footer{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+a{color:var(--accent);text-decoration:none;}
+</style>
 </head>
 
 <body>
-  <!-- Safety / Welcome -->
-  <div id="warn" class="overlay show">
-    <div class="card">
-      <div class="row" style="justify-content:space-between;align-items:flex-start">
-        <div>
-          <h1 id="wTitle">⚠️ Safety notice</h1>
-          <p id="wSub">This app can produce black/white strobe flashes and binaural audio tones.</p>
-        </div>
-        <div class="row">
-          <span class="pill" id="wPill">Headphones recommended</span>
-          <select id="langTop">
-            <option value="en" selected>English</option>
-            <option value="es">Español</option>
-          </select>
-        </div>
-      </div>
 
-      <ul id="wList">
-        <li>If you have photosensitive epilepsy, seizures, or severe light-triggered migraine: <b>do not use</b>.</li>
-        <li>Start low (e.g., 6–10 flashes/s), moderate volume, eyes closed.</li>
-        <li>Stop immediately if you feel unwell.</li>
-      </ul>
+<div id="screen"></div>
 
-      <div class="row">
-        <button id="enter" class="primary">I Understand — Enter</button>
-        <button id="enterNoStrobe">Enter (Strobe OFF)</button>
-      </div>
-
-      <p class="tiny2" id="wFoot">On iPhone/iPad, audio starts only after tapping Start (system policy).</p>
-
-      <div class="divider"></div>
-      <div class="brandLine mono" id="brandWelcome"></div>
-    </div>
+<!-- WELCOME -->
+<div id="welcome" class="overlay">
+  <div class="card">
+    <h1>Psych Light</h1>
+    <p>Light & sound stimulation for meditation and altered states.</p>
+    <button class="primary" onclick="goDisclaimer()">Enter</button>
   </div>
+</div>
 
-  <!-- Countdown overlay -->
-  <div id="countdown" class="overlay">
-    <div class="card" style="text-align:center">
-      <p id="countTitle">Get ready</p>
-      <div id="countNum" class="mono">10</div>
-      <p id="countMsg">Put on headphones, get comfortable. When it reaches 3, close your eyes.</p>
-      <div class="divider"></div>
-      <div class="row" style="justify-content:center">
-        <button id="cancelCountdown" class="danger">Cancel</button>
-      </div>
-      <div class="brandLine mono" id="brandCountdown"></div>
-    </div>
+<!-- DISCLAIMER -->
+<div id="disclaimer" class="overlay">
+  <div class="card">
+    <h3>Important Notice</h3>
+    <p>
+      This experience uses flashing light and binaural audio stimulation.<br><br>
+      Do NOT use if you have epilepsy, photosensitivity, neurological conditions,
+      or sensitivity to flashing lights.
+    </p>
+    <label>
+      <input type="checkbox" id="agree">
+      <span>I understand and wish to continue.</span>
+    </label>
+    <br>
+    <button class="primary" onclick="startApp()">Continue</button>
   </div>
+</div>
 
-  <div id="screen"></div>
-
-  <!-- Minimal HUD -->
-  <div id="hud">
-    <div id="hudTime" class="mono">00:00 / 00:00</div>
-    <button id="hudStop">STOP</button>
-    <button id="hudToggle" title="Show / hide controls">⚙︎</button>
-  </div>
-
-  <!-- Full controls -->
+<!-- APP -->
+<div id="app" style="display:none;">
   <div id="ui">
-    <div class="grp" style="min-width:270px">
-      <label id="lSession">Session</label>
-      <div class="row">
-        <button id="start" class="primary">Start</button>
-        <button id="stop" class="danger">STOP</button>
-        <button id="fs" class="ghost" title="Fullscreen">⤢</button>
-        <button id="helpBtn" class="ghost" title="Help">?</button>
-        <div class="spacer"></div>
-        <select id="lang">
-          <option value="en" selected>English</option>
-          <option value="es">Español</option>
-        </select>
+
+    <!-- SESSION -->
+    <div class="section">
+      <div class="row space">
+        <strong>Session</strong>
+        <div class="row">
+          <button class="primary" onclick="startSession()">Start</button>
+          <button class="danger" onclick="stopSession()">Stop</button>
+        </div>
       </div>
-      <div class="tiny mono" id="status">Ready. Use headphones. Eyes closed.</div>
-      <div class="tiny2 mono brandLine" id="brandUI"></div>
+      <small>Headphones on. Eyes closed.</small>
+      <p style="margin-top:10px;">
+        Created by Agustin Corona<br>
+        <a href="mailto:acoronao@gmail.com">acoronao@gmail.com</a>
+      </p>
     </div>
 
-    <div class="grp" style="min-width:280px">
-      <label id="lPreset">Preset</label>
+    <!-- STROBE -->
+    <div class="section">
+      <strong>Strobe Frequency</strong>
       <div class="row">
-        <select id="preset" style="min-width:280px">
-          <option value="alpha20" selected>Alpha Classic — 20 min (10 FPS)</option>
-          <option value="sweep15">Alpha Sweep — 15 min (8→12 FPS)</option>
-          <option value="bridge25">Theta Bridge — 25 min (10→7→10 FPS)</option>
-          <option value="custom">Custom</option>
-        </select>
+        <input type="range" min="1" max="20" step="0.1" value="10" id="fps">
+        <div class="value" id="fpsVal">10 FPS</div>
       </div>
-      <div class="tiny2" id="presetHint">Ramp → Plateau → Ramp. FPS is flashes per second (perceived speed).</div>
+      <small>Flashes per second. Recommended 8–12.</small>
     </div>
 
-    <div class="grp">
-      <label id="lStrobe">Strobe (Black/White)</label>
+    <!-- BINAURAL -->
+    <div class="section">
+      <strong>Binaural Carrier</strong>
       <div class="row">
-        <label class="pill" style="cursor:pointer">
-          <input id="strobeOn" type="checkbox" checked />
-          <span id="strobeOnText">ON</span>
-        </label>
-
-        <div class="row" style="gap:10px">
-          <div>
-            <label id="lDuty">White pulse (%)</label><br>
-            <input id="duty" type="range" min="5" max="50" step="1" value="18" />
-          </div>
-          <div class="val mono" id="dutyVal">18%</div>
-        </div>
+        <input type="range" min="100" max="400" step="1" value="220" id="carrier">
+        <div class="value" id="carrierVal">220 Hz</div>
       </div>
-      <div class="tiny2" id="strobeHint">Duty cycle changes how “punchy” the flashes feel. Lower = softer, higher = stronger.</div>
+
+      <strong>Volume</strong>
+      <div class="row">
+        <input type="range" min="0" max="100" value="40" id="vol">
+        <div class="value" id="volVal">40%</div>
+      </div>
+
+      <small>
+        Carrier defines tone pitch. Volume controls intensity.
+      </small>
     </div>
 
-    <div class="grp" style="min-width:340px">
-      <label id="lBinaural">Binaural (Hemi-Sync style)</label>
-
-      <div class="row">
-        <div class="row" style="gap:10px">
-          <div>
-            <label id="lCarrier">Carrier (Hz)</label><br>
-            <input id="carrier" type="range" min="120" max="420" step="1" value="220" />
-          </div>
-          <div class="val mono" id="carrierVal">220 Hz</div>
-        </div>
-
-        <div class="row" style="gap:10px">
-          <div>
-            <label id="lVol">Volume</label><br>
-            <input id="vol" type="range" min="0" max="0.25" step="0.005" value="0.10" />
-          </div>
-          <div class="val mono" id="volVal">40%</div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label id="lRatio">Beat = ratio × FPS</label><br>
-          <select id="ratio">
-            <option value="0.5" selected>0.5×</option>
-            <option value="0.7">0.7×</option>
-            <option value="1.0">1.0×</option>
-            <option value="1.5">1.5×</option>
-          </select>
-        </div>
-
-        <div class="row" style="gap:10px">
-          <div>
-            <label id="lMicro">Micro-sweep (±Hz)</label><br>
-            <input id="micro" type="range" min="0" max="1.0" step="0.05" value="0.20" />
-          </div>
-          <div class="val mono" id="microVal">±0.20</div>
-        </div>
-      </div>
-
-      <div class="tiny mono" id="readout">L: — Hz | R: — Hz | Beat: — Hz | FPS: —</div>
-      <div class="tiny2" id="binauralHint">
-        The app plays one frequency in the left ear and a slightly different one in the right ear.
-        Your brain perceives the difference as the “beat”. Keep volume moderate.
-      </div>
+    <!-- EXPLANATION -->
+    <div class="section">
+      <strong>How to Use</strong>
+      <p>
+        Start with low FPS and volume. Sit or lie down in a dark room.
+        Close your eyes and allow patterns to emerge naturally.
+      </p>
+      <p>
+        Changes in perception, imagery, or time distortion may occur.
+      </p>
     </div>
 
-    <details id="advanced">
-      <summary id="advTitle">Advanced / Custom session</summary>
-      <div class="divider"></div>
+    <!-- FAQ -->
+    <div class="section">
+      <strong>FAQ</strong>
+      <p><b>Is this psychedelic?</b><br>
+      It can induce altered or hypnagogic states without substances.</p>
 
-      <div class="row" style="gap:14px;flex-wrap:wrap">
-        <div class="grp" style="min-width:260px">
-          <label id="lProfile">FPS profile</label>
+      <p><b>Is it safe?</b><br>
+      For healthy individuals following guidelines, yes. Stop if uncomfortable.</p>
 
-          <div class="row">
-            <div>
-              <label id="lFStart">Start FPS</label><br>
-              <input id="fpsStart" type="range" min="2" max="25" step="0.1" value="8.0" />
-            </div>
-            <div class="val mono" id="fpsStartVal">8.0 FPS</div>
-          </div>
+      <p><b>How long should a session be?</b><br>
+      10–20 minutes is ideal for beginners.</p>
+    </div>
 
-          <div class="row">
-            <div>
-              <label id="lFPlateau">Plateau FPS</label><br>
-              <input id="fpsPlateau" type="range" min="2" max="25" step="0.1" value="10.0" />
-            </div>
-            <div class="val mono" id="fpsPlateauVal">10.0 FPS</div>
-          </div>
+    <footer>
+      Experimental tool. Not medical advice.
+    </footer>
 
-          <div class="row">
-            <div>
-              <label id="lFEnd">End FPS</label><br>
-              <input id="fpsEnd" type="range" min="2" max="25" step="0.1" value="8.0" />
-            </div>
-            <div class="val mono" id="fpsEndVal">8.0 FPS</div>
-          </div>
-
-          <div class="tiny2" id="profileHint">Recommended: 8–12 FPS. Higher is more intense and riskier.</div>
-        </div>
-
-        <div class="grp" style="min-width:320px">
-          <label id="lPhases">Phases (seconds)</label>
-          <div class="row">
-            <div>
-              <label id="lRampIn">Ramp-in</label><br>
-              <input id="rampIn" type="number" min="5" max="180" value="30" />
-            </div>
-            <div>
-              <label id="lPlateauS">Plateau</label><br>
-              <input id="plateauS" type="number" min="10" max="7200" value="1080" />
-            </div>
-            <div>
-              <label id="lRampOut">Ramp-out</label><br>
-              <input id="rampOut" type="number" min="5" max="300" value="60" />
-            </div>
-          </div>
-        </div>
-
-        <div class="grp" style="min-width:260px">
-          <label id="lCountdown">Countdown (seconds)</label>
-          <div class="row">
-            <input id="countdownSec" type="number" min="3" max="30" value="10" />
-            <span class="tiny2" id="countdownHint">Before session starts.</span>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <!-- HELP + FAQ (toggle) -->
-    <details id="helpSection">
-      <summary id="helpTitle">Help / What does each control do? + FAQ</summary>
-      <div class="divider"></div>
-
-      <div class="sectionTitle" id="controlsTitle">What each control does</div>
-
-      <div class="faqQ" id="cPresetQ">Preset</div>
-      <div class="faqA" id="cPresetA">
-        A preset defines the session length and how the flash speed (FPS) changes over time (ramp → plateau → ramp).
-        Use presets first. Use Custom only if you know what you’re changing.
-      </div>
-
-      <div class="faqQ" id="cStrobeQ">Strobe ON/OFF</div>
-      <div class="faqA" id="cStrobeA">
-        Turns the black/white flashes on or off. If you’re new, start with strobe OFF or low FPS presets.
-      </div>
-
-      <div class="faqQ" id="cDutyQ">White pulse (%)</div>
-      <div class="faqA" id="cDutyA">
-        Controls how long the “white” part lasts during each flash cycle. Lower feels softer. Higher feels more punchy/intense.
-        Keep it moderate (10–25%).
-      </div>
-
-      <div class="faqQ" id="cCarrierQ">Carrier (Hz)</div>
-      <div class="faqA" id="cCarrierA">
-        The base tone pitch. It does NOT change the beat directly; it changes how the sound feels (lower = warmer, higher = sharper).
-        Many people like 180–260 Hz.
-      </div>
-
-      <div class="faqQ" id="cVolumeQ">Volume</div>
-      <div class="faqA" id="cVolumeA">
-        Output volume of the binaural tones. Keep it comfortable and not loud. The effect doesn’t require high volume.
-      </div>
-
-      <div class="faqQ" id="cRatioQ">Beat = ratio × FPS</div>
-      <div class="faqA" id="cRatioA">
-        This links the binaural beat to the flash speed. For example, if FPS is 10 and ratio is 0.5×, the beat is ~5 Hz.
-        Higher ratio = stronger, faster internal beat.
-      </div>
-
-      <div class="faqQ" id="cMicroQ">Micro-sweep (±Hz)</div>
-      <div class="faqA" id="cMicroA">
-        Adds a gentle wobble so the beat shifts slightly over time instead of being perfectly static.
-        Small values (±0.10–±0.30) feel natural. Too high can feel uneasy.
-      </div>
-
-      <div class="faqQ" id="cFPSQ">Custom FPS profile (Start / Plateau / End)</div>
-      <div class="faqA" id="cFPSA">
-        Defines the flash speed at the start, middle, and end. It changes gradually, not instantly.
-        Beginners: stay in 8–12 FPS.
-      </div>
-
-      <div class="faqQ" id="cPhasesQ">Phases (Ramp-in / Plateau / Ramp-out)</div>
-      <div class="faqA" id="cPhasesA">
-        Ramp-in = how long it takes to reach the plateau.
-        Plateau = main time of the session.
-        Ramp-out = gradual exit so you don’t stop abruptly.
-      </div>
-
-      <div class="faqQ" id="cCountdownQ">Countdown</div>
-      <div class="faqA" id="cCountdownA">
-        A short timer before the session starts to put on headphones and get ready. At 3, close your eyes.
-      </div>
-
-      <div class="divider"></div>
-      <div class="sectionTitle" id="faqTitle">FAQ</div>
-
-      <div class="faqQ" id="f1q">What is this?</div>
-      <div class="faqA" id="f1a">
-        A meditation and mental exploration tool that combines rhythmic visual stimulation (strobe) with binaural audio.
-        Designed to be used with eyes closed.
-      </div>
-
-      <div class="faqQ" id="f2q">What is it for?</div>
-      <div class="faqA" id="f2a">
-        To support relaxation, focus, meditation depth, and introspection. It’s a tool—not a medical device.
-      </div>
-
-      <div class="faqQ" id="f3q">Do I need headphones?</div>
-      <div class="faqA" id="f3a">
-        Yes. Binaural beats require stereo audio (one frequency in each ear).
-      </div>
-
-      <div class="faqQ" id="f4q">Should I keep eyes open?</div>
-      <div class="faqA" id="f4a">
-        No. This is designed for eyes closed. Do not stare at the screen.
-      </div>
-
-      <div class="faqQ" id="f5q">Is it safe?</div>
-      <div class="faqA" id="f5a">
-        For most people, yes when used responsibly. Do not use if you have photosensitive epilepsy, seizures, or severe light-triggered migraines.
-        Stop immediately if you feel unwell.
-      </div>
-
-      <div class="faqQ" id="f6q">What should I feel?</div>
-      <div class="faqA" id="f6a">
-        Calm, deep relaxation, patterns behind closed eyes, time distortion, or mental clarity afterwards. Everyone is different.
-      </div>
-    </details>
   </div>
+</div>
 
-  <div id="toast"></div>
+<!-- SESSION BAR -->
+<div id="sessionBar">
+  <div class="card">
+    <span id="timer">Session running</span>
+    <button class="danger" onclick="stopSession()">Stop</button>
+  </div>
+</div>
 
 <script>
-(() => {
-  const $ = (id) => document.getElementById(id);
+let running=false;
+let flashInterval=null;
 
-  // Service worker
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/sw.js").catch(()=>{});
-    });
-  }
+const fps=document.getElementById("fps");
+const fpsVal=document.getElementById("fpsVal");
+const carrier=document.getElementById("carrier");
+const carrierVal=document.getElementById("carrierVal");
+const vol=document.getElementById("vol");
+const volVal=document.getElementById("volVal");
 
-  const EMAIL = "acoronao@gmail.com";
-  let LANG = "en";
-  let running = false;
-  let pendingStart = false;
+function updateValues(){
+  fpsVal.textContent=fps.value+" FPS";
+  carrierVal.textContent=carrier.value+" Hz";
+  volVal.textContent=vol.value+"%";
+}
+[fps,carrier,vol].forEach(el=>el.oninput=updateValues);
+updateValues();
 
-  const I18N = {
-    en: {
-      wTitle:"⚠️ Safety notice",
-      wSub:"This app can produce black/white strobe flashes and binaural audio tones.",
-      wPill:"Headphones recommended",
-      wList:[
-        "If you have photosensitive epilepsy, seizures, or severe light-triggered migraine: do not use.",
-        "Start low (e.g., 6–10 flashes/s), moderate volume, eyes closed.",
-        "Stop immediately if you feel unwell."
-      ],
-      enter:"I Understand — Enter",
-      enterNoStrobe:"Enter (Strobe OFF)",
-      wFoot:"On iPhone/iPad, audio starts only after tapping Start (system policy).",
-      statusReady:"Ready. Use headphones. Eyes closed.",
-      presetHint:"Ramp → Plateau → Ramp. FPS is flashes per second (perceived speed).",
-      strobeHint:"Duty cycle changes how “punchy” the flashes feel. Lower = softer, higher = stronger.",
-      binauralHint:"One frequency plays in the left ear and a slightly different one in the right ear. Your brain perceives the difference as the “beat”. Keep volume moderate.",
-      advTitle:"Advanced / Custom session",
-      profileHint:"Recommended: 8–12 FPS. Higher is more intense and riskier.",
-      countdownHint:"Before session starts.",
-      toastEntered:"Welcome. Configure and press Start.",
-      toastNoStrobe:"Entered with strobe OFF.",
-      toastStopped:"Stopped.",
-      toastEnded:"Session completed.",
-      cdTitle:"Get ready",
-      cdMsg:"Put on headphones, get comfortable. When it reaches 3, close your eyes.",
-      cdMsg3:"Close your eyes now.",
-      cdMsgGo:"Starting session…",
-      brandPrefix:"CREATED BY AGUSTIN CORONA. FOR MORE INFORMATION: ",
-      helpTitle:"Help / What does each control do? + FAQ",
-      controlsTitle:"What each control does",
-      faqTitle:"FAQ",
+function goDisclaimer(){
+  document.getElementById("welcome").style.display="none";
+  document.getElementById("disclaimer").style.display="flex";
+}
 
-      cPresetQ:"Preset",
-      cPresetA:"A preset defines the session length and how the flash speed (FPS) changes over time (ramp → plateau → ramp). Use presets first. Use Custom only if you know what you’re changing.",
-      cStrobeQ:"Strobe ON/OFF",
-      cStrobeA:"Turns the black/white flashes on or off. If you’re new, start with strobe OFF or low FPS presets.",
-      cDutyQ:"White pulse (%)",
-      cDutyA:"Controls how long the “white” part lasts during each flash cycle. Lower feels softer. Higher feels more punchy/intense. Keep it moderate (10–25%).",
-      cCarrierQ:"Carrier (Hz)",
-      cCarrierA:"The base tone pitch. It does NOT change the beat directly; it changes how the sound feels (lower = warmer, higher = sharper). Many people like 180–260 Hz.",
-      cVolumeQ:"Volume",
-      cVolumeA:"Output volume of the binaural tones. Keep it comfortable and not loud. The effect doesn’t require high volume.",
-      cRatioQ:"Beat = ratio × FPS",
-      cRatioA:"Links binaural beat to flash speed. Example: FPS 10 and ratio 0.5× → beat ~5 Hz. Higher ratio = stronger, faster internal beat.",
-      cMicroQ:"Micro-sweep (±Hz)",
-      cMicroA:"Adds a gentle wobble so the beat shifts slightly over time instead of being perfectly static. Small values (±0.10–±0.30) feel natural.",
-      cFPSQ:"Custom FPS profile (Start / Plateau / End)",
-      cFPSA:"Defines flash speed at start, middle, end. Changes gradually, not instantly. Beginners: stay in 8–12 FPS.",
-      cPhasesQ:"Phases (Ramp-in / Plateau / Ramp-out)",
-      cPhasesA:"Ramp-in = time to reach plateau. Plateau = main session time. Ramp-out = gradual exit so you don’t stop abruptly.",
-      cCountdownQ:"Countdown",
-      cCountdownA:"A short timer before the session starts to put on headphones and get ready. At 3, close your eyes.",
+function startApp(){
+  if(!document.getElementById("agree").checked) return;
+  document.getElementById("disclaimer").style.display="none";
+  document.getElementById("app").style.display="block";
+}
 
-      f1q:"What is this?",
-      f1a:"A meditation and mental exploration tool that combines rhythmic visual stimulation (strobe) with binaural audio. Designed to be used with eyes closed.",
-      f2q:"What is it for?",
-      f2a:"To support relaxation, focus, meditation depth, and introspection. It’s a tool—not a medical device.",
-      f3q:"Do I need headphones?",
-      f3a:"Yes. Binaural beats require stereo audio (one frequency in each ear).",
-      f4q:"Should I keep eyes open?",
-      f4a:"No. This is designed for eyes closed. Do not stare at the screen.",
-      f5q:"Is it safe?",
-      f5a:"For most people, yes when used responsibly. Do not use if you have photosensitive epilepsy, seizures, or severe light-triggered migraines. Stop immediately if you feel unwell.",
-      f6q:"What should I feel?",
-      f6a:"Calm, deep relaxation, patterns behind closed eyes, time distortion, or mental clarity afterwards. Everyone is different.",
+function startSession(){
+  if(running) return;
+  running=true;
+  document.getElementById("sessionBar").style.display="block";
+  flash();
+}
 
-      helpBtn:"Help"
-    },
+function stopSession(){
+  running=false;
+  clearInterval(flashInterval);
+  document.getElementById("screen").style.background="#000";
+  document.getElementById("sessionBar").style.display="none";
+}
 
-    es: {
-      wTitle:"⚠️ Aviso de seguridad",
-      wSub:"Esta app puede generar estrobo blanco/negro y audio binaural.",
-      wPill:"Audífonos recomendados",
-      wList:[
-        "Si tienes epilepsia fotosensible, convulsiones o migraña severa inducida por luz: no lo uses.",
-        "Empieza bajo (p.ej., 6–10 flashes/s), volumen moderado, ojos cerrados.",
-        "Detén inmediatamente si te sientes mal."
-      ],
-      enter:"Entendido — Entrar",
-      enterNoStrobe:"Entrar (Estrobo OFF)",
-      wFoot:"En iPhone/iPad el audio solo inicia después de tocar Start (política del sistema).",
-      statusReady:"Listo. Usa audífonos. Ojos cerrados.",
-      presetHint:"Rampa → Meseta → Rampa. FPS = flashes por segundo (lo que percibes).",
-      strobeHint:"El duty cambia qué tan “fuerte” se siente el flash. Bajo = suave, alto = más intenso.",
-      binauralHint:"Se reproduce una frecuencia en el oído izquierdo y otra ligeramente distinta en el derecho. El cerebro percibe la diferencia como el “beat”. Mantén el volumen moderado.",
-      advTitle:"Avanzado / Sesión custom",
-      profileHint:"Recomendado: 8–12 FPS. Más alto = más intenso y más riesgoso.",
-      countdownHint:"Antes de iniciar la sesión.",
-      toastEntered:"Bienvenido. Configura y presiona Start.",
-      toastNoStrobe:"Entraste con estrobo OFF.",
-      toastStopped:"Detenido.",
-      toastEnded:"Sesión terminada.",
-      cdTitle:"Prepárate",
-      cdMsg:"Ponte audífonos y acomódate. Cuando llegue a 3, cierra los ojos.",
-      cdMsg3:"Cierra los ojos ahora.",
-      cdMsgGo:"Iniciando sesión…",
-      brandPrefix:"CREADO POR AGUSTIN CORONA. PARA MÁS INFORMACIÓN: ",
-      helpTitle:"Ayuda / ¿Para qué sirve cada cosa? + FAQ",
-      controlsTitle:"¿Para qué sirve cada control?",
-      faqTitle:"Preguntas frecuentes (FAQ)",
-
-      cPresetQ:"Preset",
-      cPresetA:"Un preset define la duración de la sesión y cómo cambia la velocidad del estrobo (FPS) con el tiempo (rampa → meseta → rampa). Usa presets primero. Usa Custom solo si entiendes lo que cambias.",
-      cStrobeQ:"Estrobo ON/OFF",
-      cStrobeA:"Prende o apaga los flashes blanco/negro. Si eres nuevo, empieza con estrobo OFF o con presets de FPS bajos.",
-      cDutyQ:"Pulso blanco (%)",
-      cDutyA:"Controla cuánto dura la parte blanca en cada ciclo. Bajo = más suave. Alto = más “punchy”/intenso. Mantén moderado (10–25%).",
-      cCarrierQ:"Portadora (Hz)",
-      cCarrierA:"Es el tono base. NO cambia el beat directamente; cambia cómo se siente el sonido (más bajo = cálido, más alto = más brillante). A muchos les gusta 180–260 Hz.",
-      cVolumeQ:"Volumen",
-      cVolumeA:"Volumen de los binaurales. Mantén cómodo y no alto. El efecto no requiere volumen fuerte.",
-      cRatioQ:"Beat = ratio × FPS",
-      cRatioA:"Liga el beat binaural a la velocidad del estrobo. Ejemplo: FPS 10 y ratio 0.5× → beat ~5 Hz. Más ratio = beat más rápido/intenso.",
-      cMicroQ:"Micro-sweep (±Hz)",
-      cMicroA:"Agrega un vaivén suave para que el beat no sea totalmente estático. Valores pequeños (±0.10–±0.30) se sienten naturales.",
-      cFPSQ:"Perfil FPS custom (Inicio / Meseta / Final)",
-      cFPSA:"Define FPS al inicio, en medio y al final. Cambia gradualmente, no de golpe. Principiantes: 8–12 FPS.",
-      cPhasesQ:"Fases (Entrada / Meseta / Salida)",
-      cPhasesA:"Entrada = tiempo para llegar a la meseta. Meseta = parte principal. Salida = bajar gradualmente para no cortar de golpe.",
-      cCountdownQ:"Cuenta regresiva",
-      cCountdownA:"Timer antes de iniciar para ponerte audífonos y acomodarte. En 3, cierras los ojos.",
-
-      f1q:"¿Qué es esto?",
-      f1a:"Una herramienta de meditación y exploración mental que combina estímulo visual rítmico (estrobo) con audio binaural. Diseñada para usarse con ojos cerrados.",
-      f2q:"¿Para qué sirve?",
-      f2a:"Para apoyar relajación, enfoque, profundidad meditativa e introspección. Es una herramienta, no un dispositivo médico.",
-      f3q:"¿Necesito audífonos?",
-      f3a:"Sí. Los binaurales requieren audio estéreo (una frecuencia en cada oído).",
-      f4q:"¿Ojos abiertos o cerrados?",
-      f4a:"Cerrados. No está diseñada para mirar la pantalla. No te quedes viendo el estrobo.",
-      f5q:"¿Es seguro?",
-      f5a:"Para la mayoría sí si se usa responsablemente. No uses si tienes epilepsia fotosensible, convulsiones o migrañas severas por luz. Si algo se siente mal, detén.",
-      f6q:"¿Qué se supone que sienta?",
-      f6a:"Calma, relajación profunda, patrones con ojos cerrados, distorsión del tiempo o claridad mental al terminar. Cada persona es diferente.",
-
-      helpBtn:"Ayuda"
-    }
-  };
-
-  // Branding lines
-  function setBrandLines(){
-    const t = I18N[LANG];
-    const html = `${t.brandPrefix}<a href="mailto:${EMAIL}">${EMAIL}</a>`;
-    $("brandWelcome").innerHTML = html;
-    $("brandCountdown").innerHTML = html;
-    $("brandUI").innerHTML = html;
-  }
-
-  function applyLang(lang){
-    LANG = lang;
-    const t = I18N[LANG];
-
-    $("wTitle").textContent = t.wTitle;
-    $("wSub").textContent = t.wSub;
-    $("wPill").textContent = t.wPill;
-    $("wList").innerHTML = t.wList.map(x=>`<li>${x}</li>`).join("");
-    $("enter").textContent = t.enter;
-    $("enterNoStrobe").textContent = t.enterNoStrobe;
-    $("wFoot").textContent = t.wFoot;
-
-    if(!running) $("status").textContent = t.statusReady;
-
-    $("presetHint").textContent = t.presetHint;
-    $("strobeHint").textContent = t.strobeHint;
-    $("binauralHint").textContent = t.binauralHint;
-
-    $("advTitle").textContent = t.advTitle;
-    $("profileHint").textContent = t.profileHint;
-    $("countdownHint").textContent = t.countdownHint;
-
-    $("helpTitle").textContent = t.helpTitle;
-    $("controlsTitle").textContent = t.controlsTitle;
-    $("faqTitle").textContent = t.faqTitle;
-
-    // Controls explanations
-    $("cPresetQ").textContent = t.cPresetQ; $("cPresetA").textContent = t.cPresetA;
-    $("cStrobeQ").textContent = t.cStrobeQ; $("cStrobeA").textContent = t.cStrobeA;
-    $("cDutyQ").textContent = t.cDutyQ; $("cDutyA").textContent = t.cDutyA;
-    $("cCarrierQ").textContent = t.cCarrierQ; $("cCarrierA").textContent = t.cCarrierA;
-    $("cVolumeQ").textContent = t.cVolumeQ; $("cVolumeA").textContent = t.cVolumeA;
-    $("cRatioQ").textContent = t.cRatioQ; $("cRatioA").textContent = t.cRatioA;
-    $("cMicroQ").textContent = t.cMicroQ; $("cMicroA").textContent = t.cMicroA;
-    $("cFPSQ").textContent = t.cFPSQ; $("cFPSA").textContent = t.cFPSA;
-    $("cPhasesQ").textContent = t.cPhasesQ; $("cPhasesA").textContent = t.cPhasesA;
-    $("cCountdownQ").textContent = t.cCountdownQ; $("cCountdownA").textContent = t.cCountdownA;
-
-    // FAQ
-    $("f1q").textContent = t.f1q; $("f1a").textContent = t.f1a;
-    $("f2q").textContent = t.f2q; $("f2a").textContent = t.f2a;
-    $("f3q").textContent = t.f3q; $("f3a").textContent = t.f3a;
-    $("f4q").textContent = t.f4q; $("f4a").textContent = t.f4a;
-    $("f5q").textContent = t.f5q; $("f5a").textContent = t.f5a;
-    $("f6q").textContent = t.f6q; $("f6a").textContent = t.f6a;
-
-    // Countdown overlay
-    $("countTitle").textContent = t.cdTitle;
-    $("countMsg").textContent = t.cdMsg;
-    $("cancelCountdown").textContent = (LANG==="es") ? "Cancelar" : "Cancel";
-
-    setBrandLines();
-  }
-
-  function syncLangSelectors(val){
-    $("lang").value = val;
-    $("langTop").value = val;
-  }
-
-  // Toast
-  const toast = $("toast");
-  function showToast(msg, ms=1800){
-    toast.textContent = msg;
-    toast.style.opacity = "1";
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(()=> toast.style.opacity="0", ms);
-  }
-
-  // iOS overscroll lock: prevents bounce from stopping you before reaching bottom
-  const ui = $("ui");
-  function lockOverscroll(el){
-    let startY = 0;
-    el.addEventListener("touchstart", (e)=>{
-      if(e.touches && e.touches.length) startY = e.touches[0].clientY;
-    }, {passive:true});
-
-    el.addEventListener("touchmove", (e)=>{
-      if(!e.touches || !e.touches.length) return;
-      const y = e.touches[0].clientY;
-      const dy = y - startY;
-
-      const atTop = el.scrollTop <= 0;
-      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
-
-      // If user is trying to scroll past the top/bottom, prevent the "rubber band"
-      if((atTop && dy > 0) || (atBottom && dy < 0)){
-        e.preventDefault();
-      }
-    }, {passive:false});
-  }
-  lockOverscroll(ui);
-
-  // Slider value display helpers
-  function pctFromVol(v){ return Math.round((v / 0.25) * 100); }
-
-  function syncSliderValues(){
-    $("dutyVal").textContent = `${parseInt($("duty").value,10)}%`;
-    $("carrierVal").textContent = `${parseInt($("carrier").value,10)} Hz`;
-    $("volVal").textContent = `${pctFromVol(parseFloat($("vol").value))}%`;
-    $("microVal").textContent = `±${parseFloat($("micro").value).toFixed(2)}`;
-
-    $("fpsStartVal").textContent = `${parseFloat($("fpsStart").value).toFixed(1)} FPS`;
-    $("fpsPlateauVal").textContent = `${parseFloat($("fpsPlateau").value).toFixed(1)} FPS`;
-    $("fpsEndVal").textContent = `${parseFloat($("fpsEnd").value).toFixed(1)} FPS`;
-  }
-  ["duty","carrier","vol","micro","fpsStart","fpsPlateau","fpsEnd"].forEach(id=>{
-    $(id).addEventListener("input", syncSliderValues);
-  });
-
-  // Strobe engine
-  const screen = $("screen");
-  let strobeOn = true;
-  let whiteOn = false;
-  let nextEventMs = 0;
-  let currentFPS = 10;
-  let dutyPct = 18;
-
-  function setScreenWhite(on){
-    whiteOn = on;
-    screen.style.background = on ? "#fff" : "#000";
-  }
-  function hardStopVisual(){
-    nextEventMs = 0;
-    setScreenWhite(false);
-  }
-  function strobeTick(nowMs){
-    if(!strobeOn){
-      if(whiteOn) setScreenWhite(false);
-      return;
-    }
-    const fps = Math.max(0.5, Math.min(25, currentFPS));
-    const period = 1000 / fps;
-    const duty = Math.max(5, Math.min(50, dutyPct)) / 100.0;
-    const whiteDur = period * duty;
-    const blackDur = period - whiteDur;
-
-    if(nextEventMs === 0) nextEventMs = nowMs;
-
-    while(nowMs >= nextEventMs){
-      if(!whiteOn){ setScreenWhite(true); nextEventMs += whiteDur; }
-      else{ setScreenWhite(false); nextEventMs += blackDur; }
-    }
-  }
-
-  // Audio (binaural)
-  let ac=null, master=null, oscL=null, oscR=null, panL=null, panR=null;
-  function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
-  function lerp(a,b,t){ return a + (b-a)*t; }
-  function smoothstep(t){ t=clamp(t,0,1); return t*t*(3-2*t); }
-
-  function ensureAudio(){
-    if(ac) return;
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-    master = ac.createGain();
-    master.gain.value = 0.0001;
-    master.connect(ac.destination);
-
-    oscL = ac.createOscillator();
-    oscR = ac.createOscillator();
-    panL = ac.createStereoPanner(); panL.pan.value = -1;
-    panR = ac.createStereoPanner(); panR.pan.value =  1;
-
-    oscL.type = "sine"; oscR.type = "sine";
-    oscL.connect(panL).connect(master);
-    oscR.connect(panR).connect(master);
-  }
-
-  function setVolume(v){
-    if(!master || !ac) return;
-    master.gain.setTargetAtTime(clamp(v,0,0.25), ac.currentTime, 0.05);
-  }
-
-  function startAudio(){
-    ensureAudio();
-    if(ac.state === "suspended") ac.resume().catch(()=>{});
-    const t = ac.currentTime;
-    try{ oscL.start(t); }catch{}
-    try{ oscR.start(t); }catch{}
-    setVolume(parseFloat($("vol").value));
-  }
-
-  function setBinaural(carrierHz, beatHz){
-    if(!ac || !oscL || !oscR) return;
-    carrierHz = clamp(carrierHz, 80, 600);
-    beatHz = clamp(beatHz, 0.5, 15);
-    const L = carrierHz;
-    const R = carrierHz + beatHz;
-    const t = ac.currentTime;
-    oscL.frequency.setTargetAtTime(L, t, 0.03);
-    oscR.frequency.setTargetAtTime(R, t, 0.03);
-
-    $("readout").textContent =
-      `L: ${L.toFixed(1)} Hz | R: ${R.toFixed(1)} Hz | Beat: ${beatHz.toFixed(2)} Hz | FPS: ${currentFPS.toFixed(2)}`;
-  }
-
-  function stopAudio(){
-    if(!ac) return;
-    const t = ac.currentTime;
-    master.gain.setTargetAtTime(0.0001, t, 0.07);
-    setTimeout(()=>{
-      try{ oscL && oscL.stop(); }catch{}
-      try{ oscR && oscR.stop(); }catch{}
-      try{ ac && ac.close(); }catch{}
-      ac=null; master=null; oscL=null; oscR=null; panL=null; panR=null;
-    }, 220);
-  }
-
-  // Presets/session shaping
-  function presetConfig(){
-    const p = $("preset").value;
-    if(p === "alpha20"){
-      return { rampIn:30, plateau:(20*60 - 30 - 60), rampOut:60, fpsStart:8.0, fpsPlateau:10.0, fpsEnd:8.0 };
-    }
-    if(p === "sweep15"){
-      return { rampIn:30, plateau:(15*60 - 30 - 45), rampOut:45, fpsStart:8.0, fpsPlateau:12.0, fpsEnd:8.0, plateauMid:10.0 };
-    }
-    if(p === "bridge25"){
-      return { rampIn:45, plateau:(25*60 - 45 - 75), rampOut:75, fpsStart:10.0, fpsPlateau:7.0, fpsEnd:10.0, bridge:true };
-    }
-    return {
-      rampIn: parseInt($("rampIn").value||"30",10),
-      plateau: parseInt($("plateauS").value||"1080",10),
-      rampOut: parseInt($("rampOut").value||"60",10),
-      fpsStart: parseFloat($("fpsStart").value||"8"),
-      fpsPlateau: parseFloat($("fpsPlateau").value||"10"),
-      fpsEnd: parseFloat($("fpsEnd").value||"8")
-    };
-  }
-  function sessionTotalSeconds(cfg){ return Math.max(1, cfg.rampIn + cfg.plateau + cfg.rampOut); }
-
-  function fpsAt(cfg, elapsedSec){
-    const tRampInEnd = cfg.rampIn;
-    const tPlateauEnd = cfg.rampIn + cfg.plateau;
-
-    if(elapsedSec <= tRampInEnd){
-      const p = smoothstep(elapsedSec / Math.max(1,cfg.rampIn));
-      return lerp(cfg.fpsStart, cfg.fpsPlateau, p);
-    }
-    if(elapsedSec <= tPlateauEnd){
-      const p = (elapsedSec - cfg.rampIn) / Math.max(1,cfg.plateau);
-      if($("preset").value === "sweep15"){
-        const mid = cfg.plateauMid ?? 10.0;
-        const wob = 0.5 - 0.5*Math.cos(2*Math.PI*p);
-        return lerp(cfg.fpsPlateau, mid, wob);
-      }
-      if(cfg.bridge){
-        const wob = 0.15 * Math.sin(2*Math.PI*p);
-        return clamp(cfg.fpsPlateau + wob, 2, 25);
-      }
-      return cfg.fpsPlateau;
-    }
-    const p = smoothstep((elapsedSec - tPlateauEnd) / Math.max(1,cfg.rampOut));
-    return lerp(cfg.fpsPlateau, cfg.fpsEnd, p);
-  }
-
-  function beatAt(fps, elapsedSec){
-    const ratio = parseFloat($("ratio").value);
-    const micro = parseFloat($("micro").value);
-    const wob = micro * (0.70*Math.sin(elapsedSec*2*Math.PI*0.08) + 0.30*Math.sin(elapsedSec*2*Math.PI*0.13));
-    return clamp(ratio*fps + wob, 0.5, 15);
-  }
-
-  // HUD helpers
-  function showControls(){ $("ui").classList.remove("hidden"); }
-  function hideControls(){ $("ui").classList.add("hidden"); }
-  function showHud(){ $("hud").style.display = "block"; }
-  function hideHud(){ $("hud").style.display = "none"; }
-
-  function formatTime(sec){
-    sec = Math.max(0, Math.floor(sec));
-    const m = Math.floor(sec/60);
-    const s = sec%60;
-    return `${m}:${String(s).padStart(2,"0")}`;
-  }
-
-  let startMs = 0;
-  let cfg = null;
-
-  function loop(nowMs){
+function flash(){
+  let on=false;
+  flashInterval=setInterval(()=>{
     if(!running) return;
-    const elapsedSec = (nowMs - startMs)/1000;
-    const totalSec = sessionTotalSeconds(cfg);
-    if(elapsedSec >= totalSec){ stopSession(true); return; }
-
-    currentFPS = fpsAt(cfg, elapsedSec);
-    strobeOn = $("strobeOn").checked;
-    dutyPct = parseInt($("duty").value,10);
-    strobeTick(nowMs);
-
-    const carrier = parseFloat($("carrier").value);
-    const beat = beatAt(currentFPS, elapsedSec);
-    setBinaural(carrier, beat);
-
-    $("hudTime").textContent = `${formatTime(elapsedSec)} / ${formatTime(totalSec)}`;
-    requestAnimationFrame(loop);
-  }
-
-  function stopSession(auto=false){
-    if(!running && !pendingStart) return;
-    running = false;
-
-    if(pendingStart){
-      cancelCountdown();
-      return;
-    }
-
-    hardStopVisual();
-    stopAudio();
-    hideHud();
-    showControls();
-
-    const t = I18N[LANG];
-    $("status").textContent = t.statusReady;
-    showToast(auto ? t.toastEnded : t.toastStopped, 1800);
-  }
-
-  // Countdown
-  let countdownTimer = null;
-  let countdownN = 10;
-
-  function openCountdown(){
-    ensureAudio();
-    if(ac && ac.state === "suspended") ac.resume().catch(()=>{});
-
-    const t = I18N[LANG];
-    countdownN = parseInt($("countdownSec").value || "10", 10);
-    countdownN = Math.max(3, Math.min(30, countdownN));
-    $("countNum").textContent = String(countdownN);
-    $("countTitle").textContent = t.cdTitle;
-    $("countMsg").textContent = t.cdMsg;
-
-    $("countdown").classList.add("show");
-    pendingStart = true;
-
-    clearInterval(countdownTimer);
-    countdownTimer = setInterval(() => {
-      countdownN -= 1;
-      if(countdownN <= 3 && countdownN > 0) $("countMsg").textContent = t.cdMsg3;
-
-      if(countdownN <= 0){
-        $("countNum").textContent = "0";
-        $("countMsg").textContent = t.cdMsgGo;
-        clearInterval(countdownTimer);
-        countdownTimer = null;
-
-        setTimeout(() => {
-          $("countdown").classList.remove("show");
-          pendingStart = false;
-          startSessionNow();
-        }, 450);
-        return;
-      }
-      $("countNum").textContent = String(countdownN);
-    }, 1000);
-  }
-
-  function cancelCountdown(){
-    clearInterval(countdownTimer);
-    countdownTimer = null;
-    $("countdown").classList.remove("show");
-    pendingStart = false;
-    stopAudio();
-    showToast((LANG==="es") ? "Cancelado." : "Canceled.", 1200);
-  }
-
-  function startSessionNow(){
-    if(running) return;
-    cfg = presetConfig();
-    startAudio();
-    hardStopVisual();
-
-    running = true;
-    startMs = performance.now();
-    showHud();
-    hideControls();
-    requestAnimationFrame(loop);
-    showToast((LANG==="es") ? "Sesión iniciada." : "Session started.", 1400);
-  }
-
-  // Bind stop buttons (click + touchstart)
-  function bindStop(el){
-    const handler = (ev) => { ev.preventDefault(); stopSession(false); };
-    el.addEventListener("click", handler, {passive:false});
-    el.addEventListener("touchstart", handler, {passive:false});
-  }
-  bindStop($("stop"));
-  bindStop($("hudStop"));
-
-  // Toggle controls from HUD
-  function bindToggle(el){
-    const handler = (ev) => {
-      ev.preventDefault();
-      const u = $("ui");
-      if(u.classList.contains("hidden")) showControls();
-      else hideControls();
-    };
-    el.addEventListener("click", handler, {passive:false});
-    el.addEventListener("touchstart", handler, {passive:false});
-  }
-  bindToggle($("hudToggle"));
-
-  // Fullscreen
-  $("fs").addEventListener("click", async () => {
-    try{
-      if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
-      else await document.exitFullscreen();
-    }catch{}
-  });
-
-  // Help button toggles help details
-  $("helpBtn").addEventListener("click", () => {
-    const d = $("helpSection");
-    d.open = !d.open;
-    // scroll it into view nicely
-    d.scrollIntoView({behavior:"smooth", block:"start"});
-  });
-
-  // Volume live update
-  $("vol").addEventListener("input", () => setVolume(parseFloat($("vol").value)));
-
-  // Language wiring
-  $("lang").addEventListener("change", e => { syncLangSelectors(e.target.value); applyLang(e.target.value); });
-  $("langTop").addEventListener("change", e => { syncLangSelectors(e.target.value); applyLang(e.target.value); });
-
-  // Enter buttons
-  $("enter").addEventListener("click", ()=>{ $("warn").classList.remove("show"); showToast(I18N[LANG].toastEntered, 1700); });
-  $("enterNoStrobe").addEventListener("click", ()=>{
-    $("warn").classList.remove("show");
-    $("strobeOn").checked = false;
-    hardStopVisual();
-    showToast(I18N[LANG].toastNoStrobe, 1700);
-  });
-
-  // Start/Cancel
-  $("start").addEventListener("click", ()=>{ if(!running && !pendingStart) openCountdown(); });
-  $("cancelCountdown").addEventListener("click", cancelCountdown);
-
-  // Stop on background
-  document.addEventListener("visibilitychange", () => {
-    if(document.hidden){
-      if(pendingStart) cancelCountdown();
-      if(running) stopSession(false);
-    }
-  });
-
-  // Init
-  applyLang("en");
-  syncLangSelectors("en");
-  syncSliderValues();
-
-  // Default: keep help collapsed
-  $("helpSection").open = false;
-
-  // Update hint text blocks
-  $("presetHint").textContent = I18N[LANG].presetHint;
-  $("strobeHint").textContent = I18N[LANG].strobeHint;
-  $("binauralHint").textContent = I18N[LANG].binauralHint;
-
-})();
+    on=!on;
+    document.getElementById("screen").style.background=on?"#fff":"#000";
+  },1000/parseFloat(fps.value));
+}
 </script>
+
 </body>
 </html>
+
